@@ -10,7 +10,6 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
-
 import urllib.request
 
 # --- フォント設定（Cloudでも文字化けしないように） ---
@@ -149,38 +148,47 @@ st.subheader("📈 スコア推移グラフ")
 
 from matplotlib.lines import Line2D
 
-# --- グラフ描画 ---
-fig, ax = plt.subplots(figsize=(8, 3))
+# --- グラフ描画（改善版） ---
+fig, ax = plt.subplots(figsize=(9, 4), dpi=120)
 plot_df = log_df.sort_values("日付")
-ax.plot(plot_df["日付"], plot_df["スコア"], label="スコア", marker='o')
 
-# ✅ 軸目盛（tick）のフォントも明示的に設定
+# スコア線（大きめマーカーと太さ調整）
+ax.plot(
+    plot_df["日付"], plot_df["スコア"],
+    label="スコア", marker='o', markersize=5, linewidth=1.5, color='royalblue'
+)
+
+# ✅ 軸目盛フォント設定
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontproperties(jp_font)
 
-# しきい値線（凡例には入れない）
-ax.axhline(thresholds[0], color='green', linestyle='--')
-ax.axhline(thresholds[1], color='orange', linestyle='--')
-ax.axhline(thresholds[2], color='orange', linestyle='--')
-ax.axhline(thresholds[3], color='red', linestyle='--')
+# しきい値線
+ax.axhline(thresholds[0], color='green', linestyle='--', linewidth=1.2)
+ax.axhline(thresholds[1], color='orange', linestyle='--', linewidth=1.2)
+ax.axhline(thresholds[2], color='orange', linestyle='--', linewidth=1.2)
+ax.axhline(thresholds[3], color='red', linestyle='--', linewidth=1.2)
 
-# 凡例設定
+# 凡例
 legend_elements = [
-    Line2D([0], [0], color='blue', marker='o', label='スコア'),
+    Line2D([0], [0], color='royalblue', marker='o', label='スコア', markersize=6),
     Line2D([0], [0], color='green', linestyle='--', label='強気しきい値'),
     Line2D([0], [0], color='orange', linestyle='--', label='中立しきい値'),
     Line2D([0], [0], color='red', linestyle='--', label='弱気しきい値')
 ]
-legend = ax.legend(handles=legend_elements, loc='best', prop=jp_font)
+legend = ax.legend(handles=legend_elements, loc='upper right', fontsize=9, prop=jp_font)
 for text in legend.get_texts():
     text.set_fontproperties(jp_font)
 
-# 軸ラベル・タイトルも日本語フォント指定
+# ラベル・タイトル
 ax.set_xlabel("日付", fontproperties=jp_font)
 ax.set_ylabel("スコア", fontproperties=jp_font)
 ax.set_title("スコア推移グラフ", fontproperties=jp_font)
 
-ax.grid(True)
+# グリッドと余白
+ax.grid(True, linestyle=':', alpha=0.6)
+fig.tight_layout()
+
+# 描画
 st.pyplot(fig)
 
 # --- 補足情報 ---
