@@ -153,28 +153,28 @@ fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
 ax.plot(plot_df["日付"], plot_df["スコア"], label="スコア", marker='o')
 
+# ✅ 軸目盛（tick）のフォントも明示的に設定
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(jp_font)
+
 # しきい値線（凡例には入れない）
 ax.axhline(thresholds[0], color='green', linestyle='--')
 ax.axhline(thresholds[1], color='orange', linestyle='--')
 ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
-# ✅ 凡例をプロパティ付きで定義
+# 凡例設定
 legend_elements = [
     Line2D([0], [0], color='blue', marker='o', label='スコア'),
     Line2D([0], [0], color='green', linestyle='--', label='強気しきい値'),
     Line2D([0], [0], color='orange', linestyle='--', label='中立しきい値'),
     Line2D([0], [0], color='red', linestyle='--', label='弱気しきい値')
 ]
-
-# legend() に prop=jp_font を **しっかり指定**
 legend = ax.legend(handles=legend_elements, loc='best', prop=jp_font)
-
-# ✅ さらに念のため legend 内のすべてのテキストにフォントを再設定
 for text in legend.get_texts():
     text.set_fontproperties(jp_font)
 
-# 軸とタイトルにも明示的にフォント指定（念のため）
+# 軸ラベル・タイトルも日本語フォント指定
 ax.set_xlabel("日付", fontproperties=jp_font)
 ax.set_ylabel("スコア", fontproperties=jp_font)
 ax.set_title("スコア推移グラフ", fontproperties=jp_font)
