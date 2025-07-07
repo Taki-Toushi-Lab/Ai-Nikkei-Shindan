@@ -56,7 +56,7 @@ def get_judgment(score, thresholds):
         return "弱気（下落確率：80%以上）"
 
 # --- Streamlit UI ---
-st.image("Taki_Lab_Thumbnail_Compressed.jpg", width=250)  # ← 追加
+# st.image("Taki_Lab_Thumbnail_Compressed.jpg", width=250)  # ← 追加
 
 st.markdown("""
 <div style='text-align:center'>
