@@ -166,9 +166,9 @@ ax.axhline(thresholds[3], color='red', linestyle='--')
 # --- 凡例設定（英語表記に変更） ---
 legend_elements = [
     Line2D([0], [0], color='blue', marker='o', label='Score'),
-    Line2D([0], [0], color='green', linestyle='--', label='Bullish Threshold'),
-    Line2D([0], [0], color='orange', linestyle='--', label='Neutral Threshold'),
-    Line2D([0], [0], color='red', linestyle='--', label='Bearish Threshold')
+    Line2D([0], [0], color='green', linestyle='--', label='Bullish'),
+    Line2D([0], [0], color='orange', linestyle='--', label='Neutral'),
+    Line2D([0], [0], color='red', linestyle='--', label='Bearish')
 ]
 legend = ax.legend(handles=legend_elements, loc='best', prop=jp_font)
 for text in legend.get_texts():
