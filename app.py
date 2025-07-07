@@ -145,16 +145,39 @@ st.metric(
 
 # --- スコア推移グラフ ---
 st.subheader("📈 スコア推移グラフ") 
+
+from matplotlib.lines import Line2D
+
+# --- グラフ描画 ---
 fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
 ax.plot(plot_df["日付"], plot_df["スコア"], label="スコア", marker='o')
-ax.axhline(thresholds[0], color='green', linestyle='--', label='強気しきい値')
-ax.axhline(thresholds[1], color='orange', linestyle='--', label='中立しきい値')
+
+# ✅ 軸目盛（tick）のフォントも明示的に設定
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontproperties(jp_font)
+
+# しきい値線（凡例には入れない）
+ax.axhline(thresholds[0], color='green', linestyle='--')
+ax.axhline(thresholds[1], color='orange', linestyle='--')
 ax.axhline(thresholds[2], color='orange', linestyle='--')
-ax.axhline(thresholds[3], color='red', linestyle='--', label='弱気しきい値')
-ax.set_ylabel("スコア")
-ax.set_xlabel("日付")
-ax.legend()
+ax.axhline(thresholds[3], color='red', linestyle='--')
+
+# --- 凡例設定（英語表記に変更） ---
+legend_elements = [
+    Line2D([0], [0], color='blue', marker='o', label='Score'),
+    Line2D([0], [0], color='green', linestyle='--', label='Bullish Threshold'),
+    Line2D([0], [0], color='orange', linestyle='--', label='Neutral Threshold'),
+    Line2D([0], [0], color='red', linestyle='--', label='Bearish Threshold')
+]
+legend = ax.legend(handles=legend_elements, loc='best', prop=jp_font)
+for text in legend.get_texts():
+    text.set_fontproperties(jp_font)
+
+# --- 軸ラベル・タイトル（英語に変更） ---
+ax.set_xlabel("Date", fontproperties=jp_font)
+ax.set_ylabel("Score", fontproperties=jp_font)
+
 ax.grid(True)
 st.pyplot(fig)
 
