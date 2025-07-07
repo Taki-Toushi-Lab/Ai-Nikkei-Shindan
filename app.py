@@ -11,6 +11,21 @@ from oauth2client.service_account import ServiceAccountCredentials
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'sans-serif'  
+
+# Noto Sans JP をダウンロード（Streamlit Cloud対応）
+font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
+font_path = "/tmp/NotoSansJP-Regular.otf"
+
+if not os.path.exists(font_path):
+    import urllib.request
+    urllib.request.urlretrieve(font_url, font_path)
+
+# フォントを matplotlib に設定
+jp_font = fm.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = jp_font.get_name()
+
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
@@ -37,6 +52,8 @@ def get_judgment(score, thresholds):
         return "弱気（下落確率：80%以上）"
 
 # --- Streamlit UI ---
+st.image("Taki_Lab_Thumbnail_Compressed.jpg", width=250)  # ← 追加
+
 st.markdown("""
 <div style='text-align:center'>
     <h1>📈 AI日経診断 <span style='font-size:0.7em'>(Takiの投資ラボ)</span></h1>
@@ -122,9 +139,6 @@ st.metric(
 )
 
 # --- スコア推移グラフ ---
-import matplotlib.pyplot as plt
-plt.rcParams['font.family'] = 'sans-serif'  
-
 st.subheader("📈 スコア推移グラフ") 
 fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
@@ -135,7 +149,7 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--', label='弱気しきい値')
 ax.set_ylabel("スコア")
 ax.set_xlabel("日付")
-ax.legend()
+ax.legend(loc="best", prop=jp_font)  # ← これだけでOK
 ax.grid(True)
 st.pyplot(fig)
 
