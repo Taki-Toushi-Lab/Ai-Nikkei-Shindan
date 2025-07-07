@@ -15,10 +15,9 @@ import matplotlib.pyplot as plt
 plt.rcParams['font.family'] = 'sans-serif'  # または削除
 
 # --- 定数とパス ---
-MODEL_PATH = r"C:\\Users\\yasuyuki\\OneDrive - Questindustries\\デスクトップ\\Nikkei_Python\\ls_model.pkl"
-THRESHOLDS_PATH = r"C:\\Users\\yasuyuki\\OneDrive - Questindustries\\デスクトップ\\Nikkei_Python\\ls_thresholds.pkl"
-CSV_LOG_PATH = r"C:\\Users\\yasuyuki\\OneDrive - Questindustries\\デスクトップ\\Nikkei_Python\\ls_log.csv"
-CREDENTIALS_FILE = r"C:\\Users\\yasuyuki\\OneDrive - Questindustries\\デスクトップ\\Nikkei_Python\\credentials.json"
+MODEL_PATH = "ls_model.pkl"
+THRESHOLDS_PATH = "ls_thresholds.pkl"
+CREDENTIALS_FILE = "credentials.json"
 SPREADSHEET_KEY = "1WARG0Ev0wYJ1Kb1zLwihP0c45gs8Vq-h5Y22biWa7LI"
 
 FEATURE_COLUMNS = [
