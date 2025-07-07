@@ -17,7 +17,6 @@ plt.rcParams['font.family'] = 'sans-serif'  # または削除
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
-CREDENTIALS_FILE = "credentials.json"
 SPREADSHEET_KEY = "1WARG0Ev0wYJ1Kb1zLwihP0c45gs8Vq-h5Y22biWa7LI"
 
 FEATURE_COLUMNS = [
@@ -57,16 +56,19 @@ model = joblib.load(MODEL_PATH)
 thresholds = list(map(int, joblib.load(THRESHOLDS_PATH))) if os.path.exists(THRESHOLDS_PATH) else [80, 60, 40, 20]
 t1, t2, t3, t4 = thresholds 
 
-# スプレッドシートから「LS日経診断」を取得
+# --- スプレッドシートから「LS日経診断」を取得
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+credentials_dict = dict(st.secrets["gcp_service_account"])
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
 gc = gspread.authorize(credentials)
 ws = gc.open_by_key(SPREADSHEET_KEY).worksheet("LS日経診断")
 
+# --- @st.cache_data 関数の中も同様に：
 @st.cache_data(ttl=600)
 def load_log_df():
     scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(CREDENTIALS_FILE, scope)
+    credentials_dict = dict(st.secrets["gcp_service_account"])
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
     gc = gspread.authorize(credentials)
     ws = gc.open_by_key(SPREADSHEET_KEY).worksheet("LS日経診断")
     
