@@ -24,6 +24,7 @@ try:
     # フォントを matplotlib に設定
     jp_font = fm.FontProperties(fname=font_path)
     plt.rcParams['font.family'] = jp_font.get_name()
+    plt.rcParams['axes.unicode_minus'] = False  # マイナス符号も日本語フォントで表示
 
 except Exception as e:
     # フォント読み込みに失敗した場合はデフォルトで継続
@@ -146,15 +147,20 @@ st.metric(
 st.subheader("📈 スコア推移グラフ") 
 fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
+
 ax.plot(plot_df["日付"], plot_df["スコア"], label="スコア", marker='o')
 ax.axhline(thresholds[0], color='green', linestyle='--', label='強気しきい値')
 ax.axhline(thresholds[1], color='orange', linestyle='--', label='中立しきい値')
 ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--', label='弱気しきい値')
-ax.set_ylabel("スコア")
-ax.set_xlabel("日付")
+
+# ✅ ここで日本語フォントを適用
+ax.set_ylabel("スコア", fontproperties=jp_font)
+ax.set_xlabel("日付", fontproperties=jp_font)
+ax.set_title("📈 スコア推移グラフ", fontproperties=jp_font)
 ax.legend(loc="best", prop=jp_font)
 ax.grid(True)
+
 st.pyplot(fig)
 
 # --- 補足情報 ---
