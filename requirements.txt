@@ -1,7 +1,8 @@
+scikit-learn
+joblib
+gspread
+oauth2client
 streamlit
 pandas
 numpy
-joblib
 matplotlib
-gspread
-oauth2client
