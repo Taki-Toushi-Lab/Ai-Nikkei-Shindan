@@ -145,20 +145,28 @@ st.metric(
 
 # --- スコア推移グラフ ---
 st.subheader("📈 スコア推移グラフ") 
+
+from matplotlib.lines import Line2D
+
+# --- グラフ描画 ---
 fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
-
 ax.plot(plot_df["日付"], plot_df["スコア"], label="スコア", marker='o')
-ax.axhline(thresholds[0], color='green', linestyle='--', label='強気しきい値')
-ax.axhline(thresholds[1], color='orange', linestyle='--', label='中立しきい値')
-ax.axhline(thresholds[2], color='orange', linestyle='--')
-ax.axhline(thresholds[3], color='red', linestyle='--', label='弱気しきい値')
 
-# ✅ ここで日本語フォントを適用
-ax.set_ylabel("スコア", fontproperties=jp_font)
-ax.set_xlabel("日付", fontproperties=jp_font)
-ax.set_title("📈 スコア推移グラフ", fontproperties=jp_font)
-ax.legend(loc="best", prop=jp_font)
+# しきい値線（凡例には入れない）
+ax.axhline(thresholds[0], color='green', linestyle='--')
+ax.axhline(thresholds[1], color='orange', linestyle='--')
+ax.axhline(thresholds[2], color='orange', linestyle='--')
+ax.axhline(thresholds[3], color='red', linestyle='--')
+
+# ✅ 凡例を個別に定義してフォント適用
+legend_elements = [
+    Line2D([0], [0], color='blue', marker='o', label='スコア'),
+    Line2D([0], [0], color='green', linestyle='--', label='強気しきい値'),
+    Line2D([0], [0], color='orange', linestyle='--', label='中立しきい値'),
+    Line2D([0], [0], color='red', linestyle='--', label='弱気しきい値')
+]
+ax.legend(handles=legend_elements, loc='best', prop=jp_font)
 ax.grid(True)
 
 st.pyplot(fig)
