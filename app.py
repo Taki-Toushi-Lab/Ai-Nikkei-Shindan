@@ -14,6 +14,20 @@ warnings.simplefilter(action='ignore', category=UserWarning)
 import matplotlib.pyplot as plt
 plt.rcParams['font.family'] = 'sans-serif'  # または削除
 
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import os
+
+font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
+font_path = "/tmp/NotoSansJP-Regular.otf"
+
+if not os.path.exists(font_path):
+    import urllib.request
+    urllib.request.urlretrieve(font_url, font_path)
+
+jp_font = fm.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = jp_font.get_name()
+
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
