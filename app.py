@@ -11,22 +11,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 
-import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
-
-# Google Fonts の「Noto Sans JP」を指定
-font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
-font_path = "/tmp/NotoSansJP-Regular.otf"
-
-# 1回だけダウンロードして保存
-if not os.path.exists(font_path):
-    import urllib.request
-    urllib.request.urlretrieve(font_url, font_path)
-
-# フォントを有効化
-jp_font = fm.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = jp_font.get_name()
-
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
@@ -138,6 +122,9 @@ st.metric(
 )
 
 # --- スコア推移グラフ ---
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'sans-serif'  
+
 st.subheader("📈 スコア推移グラフ") 
 fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
