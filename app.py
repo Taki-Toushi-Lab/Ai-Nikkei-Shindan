@@ -14,17 +14,24 @@ warnings.simplefilter(action='ignore', category=UserWarning)
 import matplotlib.pyplot as plt
 plt.rcParams['font.family'] = 'sans-serif'  
 
+import urllib.request
+
 # Noto Sans JP をダウンロード（Streamlit Cloud対応）
 font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
 font_path = "/tmp/NotoSansJP-Regular.otf"
 
-if not os.path.exists(font_path):
-    import urllib.request
-    urllib.request.urlretrieve(font_url, font_path)
+try:
+    if not os.path.exists(font_path):
+        urllib.request.urlretrieve(font_url, font_path)
+    
+    # フォントを matplotlib に設定
+    jp_font = fm.FontProperties(fname=font_path)
+    plt.rcParams['font.family'] = jp_font.get_name()
 
-# フォントを matplotlib に設定
-jp_font = fm.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = jp_font.get_name()
+except Exception as e:
+    # フォント読み込みに失敗した場合はデフォルトで継続
+    print(f"[フォント読み込みエラー]: {e}")
+    jp_font = fm.FontProperties()
 
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
@@ -149,7 +156,7 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--', label='弱気しきい値')
 ax.set_ylabel("スコア")
 ax.set_xlabel("日付")
-ax.legend(loc="best", prop=jp_font)  # ← これだけでOK
+ax.legend(loc="best", prop=jp_font)
 ax.grid(True)
 st.pyplot(fig)
 
