@@ -11,14 +11,11 @@ from oauth2client.service_account import ServiceAccountCredentials
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 
-import matplotlib.pyplot as plt
-plt.rcParams['font.family'] = 'sans-serif'  
-
 import urllib.request
 
 # Noto Sans JP をダウンロード（Streamlit Cloud対応）
 font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
-font_path = "/tmp/NotoSansJP-Regular.otf"
+font_path = "/tmp/NotoSansJP-Regular.otf"  # Linux/Streamlit Cloud 環境向け
 
 try:
     if not os.path.exists(font_path):
