@@ -12,27 +12,25 @@ import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 
 import urllib.request
-# Noto Sans JP をダウンロード（Streamlit Cloud対応）
+
+# --- フォント設定（Cloudでも文字化けしないように） ---
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)  # ← 最初にリセット！
+
 font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
-font_path = "/tmp/NotoSansJP-Regular.otf"  # Linux/Streamlit Cloud 環境向け
+font_path = "/tmp/NotoSansJP-Regular.otf"
 
 try:
     if not os.path.exists(font_path):
         urllib.request.urlretrieve(font_url, font_path)
-    
-    # フォントを matplotlib に設定
+
     jp_font = fm.FontProperties(fname=font_path)
     plt.rcParams['font.family'] = jp_font.get_name()
-    plt.rcParams['axes.unicode_minus'] = False  # マイナス符号も日本語フォントで表示
+    plt.rcParams['axes.unicode_minus'] = False
 
 except Exception as e:
-    # フォント読み込みに失敗した場合はデフォルトで継続
     print(f"[フォント読み込みエラー]: {e}")
     jp_font = fm.FontProperties()
-
-import matplotlib as mpl
-mpl.rcParams.update(mpl.rcParamsDefault)  # 一度リセット
-plt.rcParams['font.family'] = jp_font.get_name()
 
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
