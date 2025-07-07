@@ -6,4 +6,3 @@ streamlit
 pandas
 numpy
 matplotlib
-ipaexfont
