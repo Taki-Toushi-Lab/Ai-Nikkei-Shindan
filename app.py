@@ -14,16 +14,6 @@ warnings.simplefilter(action='ignore', category=UserWarning)
 import matplotlib.pyplot as plt
 plt.rcParams['font.family'] = 'sans-serif'  # または削除
 
-# フォントを明示的にロードし、存在確認付きで設定
-ipa_path = "/usr/share/fonts/truetype/ipaexg/ipaexg.ttf"  # Linux
-# ipa_path = "C:/Windows/Fonts/ipaexg.ttf"  # Windows（インストール済みなら）
-
-if os.path.exists(ipa_path):
-    ipa_font = fm.FontProperties(fname=ipa_path)
-    plt.rcParams["font.family"] = ipa_font.get_name()
-else:
-    st.warning("⚠️ 日本語フォント（IPAexGothic）が見つかりません。グラフ内に文字化けが発生する可能性があります。")
-
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
