@@ -146,9 +146,22 @@ plot_df["hit"] = plot_df.apply(lambda row: (
 if "prediction" not in plot_df.columns:
     plot_df["prediction"] = plot_df["スコア"].apply(lambda s: "強気" if s >= t2 else "弱気" if s <= t3 else "中立")
 
-plot_df["color"] = plot_df.apply(lambda row: (
-    "dodgerblue" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
-), axis=1)
+def assign_color(row):
+    if pd.isna(row["label"]):  # 今日など判定未確定の日
+        if row["スコア"] >= t2:
+            return "green"
+        elif row["スコア"] <= t3:
+            return "red"
+        else:
+            return "orange"
+    else:
+        return (
+            "dodgerblue" if row["hit"]
+            else "orange" if row["prediction"] == "中立"
+            else "gray"
+        )
+
+plot_df["color"] = plot_df.apply(assign_color, axis=1)
 
 for color in ["dodgerblue", "orange", "gray"]:
     subset = plot_df[plot_df["color"] == color]
@@ -163,12 +176,14 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
-    Line2D([0], [0], color='dodgerblue', marker='o', label='Correct'),
-    Line2D([0], [0], color='gray', marker='o', label='Incorrect'),
-    Line2D([0], [0], color='orange', marker='o', label='Neutral'),
+    Line2D([0], [0], color='green', marker='o', label='Today（Bull）'),
+    Line2D([0], [0], color='orange', marker='o', label='Today(Neutral)'),
+    Line2D([0], [0], color='red', marker='o', label='Today（Bear）'),
+    Line2D([0], [0], color='dodgerblue', marker='o', label='Hit'),
+    Line2D([0], [0], color='gray', marker='o', label='Miss'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull Line'),
-    Line2D([0], [0], color='red', linestyle='--', label='Bear Line'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral Line'),
+    Line2D([0], [0], color='red', linestyle='--', label='Bear Line'),
 ]
 legend = ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.0, 0.5), prop=jp_font)
 for text in legend.get_texts():
