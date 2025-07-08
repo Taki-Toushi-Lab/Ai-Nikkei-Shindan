@@ -58,16 +58,15 @@ def get_judgment(score, thresholds):
 
 # --- バッジ用HTMLスタイル ---
 def score_badge(judgment):
-    # 改行挿入：全角括弧の前で改行（行揃え + 下寄せ + 明示的な行ブロック）
     if "（" in judgment:
         parts = judgment.split("（")
         line1 = parts[0]
         line2 = "（" + parts[1]
-        display_text = f"<div>{line1}</div><div>{line2}</div>"
+        display_text = f"<span style='font-weight:bold'>{line1}</span><br><span>{line2}</span>"
     else:
-        display_text = f"<div>{judgment}</div>"
+        display_text = judgment
 
-    return f"<div style='display:inline-block; text-align:left; line-height:1.2; font-size:1.05em; padding-top:6px'>{display_text}</div>"
+    return f"<div style='display:inline-block; text-align:left; line-height:1.5; font-size:1.05em; padding-left:4px'>{display_text}</div>"
 
 # --- Streamlit UI ---
 st.markdown("""
