@@ -58,16 +58,16 @@ def get_judgment(score, thresholds):
 
 # --- バッジ用HTMLスタイル ---
 def score_badge(judgment):
-    # 改行挿入：全角括弧の前で改行（行揃え + 下寄せ）
+    # 改行挿入：全角括弧の前で改行（行揃え + 下寄せ + 明示的な行ブロック）
     if "（" in judgment:
         parts = judgment.split("（")
         line1 = parts[0]
         line2 = "（" + parts[1]
-        display_text = f"{line1}<br>{line2}"
+        display_text = f"<div>{line1}</div><div>{line2}</div>"
     else:
-        display_text = judgment
+        display_text = f"<div>{judgment}</div>"
 
-    return f"<div style='display:inline-block; text-align:left; line-height:1.3; vertical-align:bottom; font-size:1.1em; padding-top:8px'>{display_text}</div>"
+    return f"<div style='display:inline-block; text-align:left; line-height:1.2; font-size:1.05em; padding-top:6px'>{display_text}</div>"
 
 # --- Streamlit UI ---
 st.markdown("""
@@ -120,8 +120,8 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-st.markdown(f"#### 診断結果：{score_badge(judgment)}", unsafe_allow_html=True)
-st.metric("判定結果", result)
+st.markdown(f"#### 診断：{score_badge(judgment)}", unsafe_allow_html=True)
+st.metric("判定", result)
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
 valid_df = valid_df[valid_df["日付"] < pd.to_datetime(selected_date)].copy()
