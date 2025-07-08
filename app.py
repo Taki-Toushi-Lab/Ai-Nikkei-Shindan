@@ -152,13 +152,21 @@ plot_df["hit"] = plot_df.apply(lambda row: (
     (row["スコア"] <= t3 and row["label"] == 0)
 ), axis=1)
 
+# prediction列の補完（なければ計算）
+if "prediction" not in plot_df.columns:
+    plot_df["prediction"] = plot_df["スコア"].apply(lambda s: "強気" if s >= t2 else "弱気" if s <= t3 else "中立")
+
 plot_df["color"] = plot_df.apply(lambda row: (
     "lime" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
 ), axis=1)
 
 for color in ["lime", "orange", "gray"]:
     subset = plot_df[plot_df["color"] == color]
-    ax.scatter(subset["日付"], subset["スコア"], color=color, label=color.capitalize(), zorder=5)
+    ax.scatter(subset["日付"], subset["スコア"], color=color, label={
+        "lime": "Hit",
+        "gray": "Miss",
+        "orange": "Neutral"
+    }[color], zorder=5)
 
 ax.axhline(thresholds[0], color='green', linestyle='--')
 ax.axhline(thresholds[1], color='orange', linestyle='--')
