@@ -150,10 +150,7 @@ def assign_color(row):
     if pd.isna(row["label"]):  # 今日など未確定
         return "lime"
     elif row["hit"]:
-        if row["スコア"] >= t2:
-            return "green"
-        elif row["スコア"] <= t3:
-            return "red"
+        return "dodgerblue"
     elif row["prediction"] == "中立":
         return "orange"
     else:
@@ -161,7 +158,7 @@ def assign_color(row):
 
 plot_df["color"] = plot_df.apply(assign_color, axis=1)
 
-for color in ["green", "red", "lime", "orange", "gray"]:
+for color in ["dodgerblue", "gray", "orange", "lime"]:
     subset = plot_df[plot_df["color"] == color]
     ax.scatter(subset["日付"], subset["スコア"], color=color, label=color, zorder=5)
 
@@ -175,9 +172,8 @@ ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
     Line2D([0], [0], color='lime', marker='o', label='Today'),
-    Line2D([0], [0], color='green', marker='o', label='Hit (Bull)'),
+    Line2D([0], [0], color='dodgerblue', marker='o', label='Hit'),
     Line2D([0], [0], color='orange', marker='o', label='Neutral'),
-    Line2D([0], [0], color='red', marker='o', label='Hit (Bear)'),    
     Line2D([0], [0], color='gray', marker='o', label='Miss'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull Line'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral Line'),
