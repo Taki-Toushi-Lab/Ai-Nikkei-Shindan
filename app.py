@@ -107,19 +107,7 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-
-def score_badge(judgment):
-    if "（" in judgment:
-        parts = judgment.split("（")
-        line1 = parts[0]
-        line2 = "（" + parts[1]
-        display_text = f"<div style='text-align:center;'><div style='font-weight:bold'>{line1}</div><div>{line2}</div></div>"
-    else:
-        display_text = judgment
-
-    return f"<div style='display:inline-block; line-height:1.4; font-size:1.05em; padding-left:4px'>{display_text}</div>"
-
-st.markdown(score_badge(judgment), unsafe_allow_html=True)
+st.metric("診断", judgment)
 st.metric("判定結果", result)
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
