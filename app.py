@@ -108,12 +108,7 @@ result = row["判定"].values[0]
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
 #st.metric("診断", judgment)
-st.markdown(f"""
-<div style='display: flex; flex-direction: column;'>
-  <span style='color: #6c757d; font-size: 14px;'>診断</span>
-  <span style='font-size: 20px; font-weight: bold;'>{judgment}</span>
-</div>
-""", unsafe_allow_html=True)
+st.markdown(f"<p style='font-size:14px;'>診断<p style='font-size:24px;'><b>{judgment}</b></p>", unsafe_allow_html=True)
 
 st.metric("判定結果", result)
 
