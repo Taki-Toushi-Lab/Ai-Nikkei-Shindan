@@ -177,9 +177,9 @@ ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
     Line2D([0], [0], color='green', marker='o', label='Today[Bull]'),
-    Line2D([0], [0], color='orange', marker='o', label='Today[Neutral]'),
     Line2D([0], [0], color='red', marker='o', label='Today[Bear]'),
     Line2D([0], [0], color='dodgerblue', marker='o', label='Hit'),
+    Line2D([0], [0], color='orange', marker='o', label='Neutral'),
     Line2D([0], [0], color='gray', marker='o', label='Miss'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull Line'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral Line'),
