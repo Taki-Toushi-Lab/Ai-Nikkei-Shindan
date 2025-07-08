@@ -160,7 +160,7 @@ plot_df["color"] = plot_df.apply(lambda row: (
     "lime" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
 ), axis=1)
 
-for color in ["lime", "orange", "gray"]:
+for color in ["royalblue", "orange", "gray"]:
     subset = plot_df[plot_df["color"] == color]
     ax.scatter(subset["日付"], subset["スコア"], color=color, label={
         "lime": "Hit",
@@ -174,14 +174,13 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
-    Line2D([0], [0], color='royalblue', marker='o', label='Score'),
-    Line2D([0], [0], color='lime', marker='o', label='Correct'),
+    Line2D([0], [0], color='royalblue', marker='o', label='Correct'),
     Line2D([0], [0], color='gray', marker='o', label='Incorrect'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral'),
     Line2D([0], [0], color='red', linestyle='--', label='Bear')
 ]
-legend = ax.legend(handles=legend_elements, loc='best', prop=jp_font)
+legend = ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.0, 0.5), prop=jp_font)
 for text in legend.get_texts():
     text.set_fontproperties(jp_font)
 
