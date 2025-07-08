@@ -107,7 +107,7 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-st.metric("診断", judgment)
+#st.metric("診断", judgment)
 
 # --- バッジ用HTMLスタイル ---
 def score_badge(judgment):
