@@ -107,8 +107,8 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-st.markdown("診断",judgment)
-st.metric("判定", result)
+st.metric("診断", judgment)
+st.metric("判定結果", result)
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
 valid_df = valid_df[valid_df["日付"] < pd.to_datetime(selected_date)].copy()
