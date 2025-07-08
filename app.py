@@ -157,10 +157,10 @@ if "prediction" not in plot_df.columns:
     plot_df["prediction"] = plot_df["スコア"].apply(lambda s: "強気" if s >= t2 else "弱気" if s <= t3 else "中立")
 
 plot_df["color"] = plot_df.apply(lambda row: (
-    "lime" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
+    "dodgerblue" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
 ), axis=1)
 
-for color in ["lime", "orange", "gray"]:
+for color in ["dodgerblue", "orange", "gray"]:
     subset = plot_df[plot_df["color"] == color]
     ax.scatter(subset["日付"], subset["スコア"], color=color, label=color, zorder=5)
 
@@ -173,8 +173,8 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
-    Line2D([0], [0], color='royalblue', marker='o', label='Score'),
-    Line2D([0], [0], color='lime', marker='o', label='Correct'),
+    Line2D([0], [0], color='dodgerblue', marker='o', label='Score'),
+    Line2D([0], [0], color='dodgerblue', marker='o', label='Correct'),
     Line2D([0], [0], color='gray', marker='o', label='Incorrect'),
     Line2D([0], [0], color='orange', marker='o', label='Neutral'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull'),
