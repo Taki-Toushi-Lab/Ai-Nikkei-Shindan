@@ -157,10 +157,10 @@ for color in ["dodgerblue", "orange", "gray"]:
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontproperties(jp_font)
 
-ax.axhline(61, color='green', linestyle='--')        # Bull Line
-ax.axhline(60, color='orange', linestyle='--')       # Neutral Line 上限
-ax.axhline(40, color='orange', linestyle='--')       # Neutral Line 下限
-ax.axhline(39, color='red', linestyle='--')          # Bear Line
+ax.axhline(thresholds[0], color='green', linestyle='--')
+ax.axhline(thresholds[1], color='orange', linestyle='--')
+ax.axhline(thresholds[2], color='orange', linestyle='--')
+ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
     Line2D([0], [0], color='dodgerblue', marker='o', label='Correct'),
