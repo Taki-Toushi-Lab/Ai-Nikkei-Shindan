@@ -56,18 +56,6 @@ def get_judgment(score, thresholds):
     else:
         return "弱気（下落確率：80%以上）"
 
-# --- バッジ用HTMLスタイル ---
-def score_badge(judgment):
-    if "（" in judgment:
-        parts = judgment.split("（")
-        line1 = parts[0]
-        line2 = "（" + parts[1]
-        display_text = f"<span style='font-weight:bold'>{line1}：</span><span>{line2}</span>"
-    else:
-        display_text = judgment
-
-    return f"<div style='display:inline-block; text-align:left; line-height:1.5; font-size:1.05em; padding-left:4px'>{display_text}</div>"
-
 # --- Streamlit UI ---
 st.markdown("""
 <div style='text-align:center'>
@@ -119,7 +107,7 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-st.markdown(f"#### 診断：{score_badge(judgment)}", unsafe_allow_html=True)
+st.markdown("診断",judgment)
 st.metric("判定", result)
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
