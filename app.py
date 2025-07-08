@@ -67,7 +67,7 @@ def score_badge(judgment):
     else:
         display_text = judgment
 
-    return f"<div style='display:inline-block; text-align:left; line-height:1.3; vertical-align:middle; font-size:1.1em;'>{display_text}</div>"
+    return f"<div style='display:inline-block; text-align:left; line-height:1.3; vertical-align:middle; font-size:1.1em; padding-top:4px'>{display_text}</div>"
 
 # --- Streamlit UI ---
 st.markdown("""
