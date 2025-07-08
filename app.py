@@ -147,23 +147,21 @@ if "prediction" not in plot_df.columns:
     plot_df["prediction"] = plot_df["スコア"].apply(lambda s: "強気" if s >= t2 else "弱気" if s <= t3 else "中立")
 
 def assign_color(row):
-    if pd.isna(row["label"]):  # 今日など判定未確定の日
+    if pd.isna(row["label"]):  # 今日など未確定
+        return "black"
+    elif row["hit"]:
         if row["スコア"] >= t2:
             return "green"
         elif row["スコア"] <= t3:
             return "red"
-        else:
-            return "orange"
+    elif row["prediction"] == "中立":
+        return "orange"
     else:
-        return (
-            "dodgerblue" if row["hit"]
-            else "orange" if row["prediction"] == "中立"
-            else "gray"
-        )
+        return "gray"
 
 plot_df["color"] = plot_df.apply(assign_color, axis=1)
 
-for color in ["green", "orange", "red", "dodgerblue", "gray"]:
+for color in ["green", "red", "black", "orange", "gray"]:
     subset = plot_df[plot_df["color"] == color]
     ax.scatter(subset["日付"], subset["スコア"], color=color, label=color, zorder=5)
 
@@ -185,6 +183,18 @@ legend_elements = [
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral Line'),
     Line2D([0], [0], color='red', linestyle='--', label='Bear Line'),
 ]
+
+legend_elements = [
+    Line2D([0], [0], color='black', marker='o', label='Today'),
+    Line2D([0], [0], color='green', marker='o', label='Hit (Bull)'),
+    Line2D([0], [0], color='orange', marker='o', label='Neutral'),
+    Line2D([0], [0], color='red', marker='o', label='Hit (Bear)'),    
+    Line2D([0], [0], color='gray', marker='o', label='Miss'),
+    Line2D([0], [0], color='green', linestyle='--', label='Bull Line'),
+    Line2D([0], [0], color='orange', linestyle='--', label='Neutral Line'),
+    Line2D([0], [0], color='red', linestyle='--', label='Bear Line'),
+]
+
 legend = ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.0, 0.5), prop=jp_font)
 for text in legend.get_texts():
     text.set_fontproperties(jp_font)
