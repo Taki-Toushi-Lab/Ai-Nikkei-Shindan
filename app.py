@@ -173,13 +173,12 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
-    Line2D([0], [0], color='dodgerblue', marker='o', label='Score'),
     Line2D([0], [0], color='dodgerblue', marker='o', label='Correct'),
     Line2D([0], [0], color='gray', marker='o', label='Incorrect'),
     Line2D([0], [0], color='orange', marker='o', label='Neutral'),
-    Line2D([0], [0], color='green', linestyle='--', label='Bull'),
+    Line2D([0], [0], color='green', linestyle='--', label='Bull Line'),
+    Line2D([0], [0], color='red', linestyle='--', label='Bear Line'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral Line'),
-    Line2D([0], [0], color='red', linestyle='--', label='Bear')
 ]
 legend = ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.0, 0.5), prop=jp_font)
 for text in legend.get_texts():
