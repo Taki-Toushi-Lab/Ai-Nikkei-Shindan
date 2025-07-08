@@ -157,13 +157,13 @@ if "prediction" not in plot_df.columns:
     plot_df["prediction"] = plot_df["スコア"].apply(lambda s: "強気" if s >= t2 else "弱気" if s <= t3 else "中立")
 
 plot_df["color"] = plot_df.apply(lambda row: (
-    "lime" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
+    "royalblue" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
 ), axis=1)
 
 for color in ["royalblue", "orange", "gray"]:
     subset = plot_df[plot_df["color"] == color]
     ax.scatter(subset["日付"], subset["スコア"], color=color, label={
-        "lime": "Hit",
+        "royalblue": "Hit",
         "gray": "Miss",
         "orange": "Neutral"
     }[color], zorder=5)
