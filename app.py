@@ -151,11 +151,14 @@ plot_df["hit"] = plot_df.apply(lambda row: (
     (row["スコア"] >= t2 and row["label"] == 1) or
     (row["スコア"] <= t3 and row["label"] == 0)
 ), axis=1)
-ax.scatter(plot_df["日付"][plot_df["hit"]], plot_df["スコア"][plot_df["hit"]], color='lime', label='的中', zorder=5)
-ax.scatter(plot_df["日付"][~plot_df["hit"]], plot_df["スコア"][~plot_df["hit"]], color='gray', label='外れ', zorder=5)
 
-for label in ax.get_xticklabels() + ax.get_yticklabels():
-    label.set_fontproperties(jp_font)
+plot_df["color"] = plot_df.apply(lambda row: (
+    "lime" if row["hit"] else ("orange" if row["prediction"] == "中立" else "gray")
+), axis=1)
+
+for color in ["lime", "orange", "gray"]:
+    subset = plot_df[plot_df["color"] == color]
+    ax.scatter(subset["日付"], subset["スコア"], color=color, label=color.capitalize(), zorder=5)
 
 ax.axhline(thresholds[0], color='green', linestyle='--')
 ax.axhline(thresholds[1], color='orange', linestyle='--')
@@ -164,8 +167,8 @@ ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
     Line2D([0], [0], color='royalblue', marker='o', label='Score'),
-    Line2D([0], [0], color='lime', marker='o', label='的中'),
-    Line2D([0], [0], color='gray', marker='o', label='外れ'),
+    Line2D([0], [0], color='lime', marker='o', label='Correct'),
+    Line2D([0], [0], color='gray', marker='o', label='Incorrect'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral'),
     Line2D([0], [0], color='red', linestyle='--', label='Bear')
