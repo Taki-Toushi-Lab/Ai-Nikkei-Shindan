@@ -56,7 +56,7 @@ def get_judgment(score, thresholds):
     else:
         return "弱気（下落確率：80%以上）"
 
-# --- バッジ用HTMLスタイル ---
+# --- 改行付き診断バッジ関数 ---
 def score_badge(judgment):
     if "強気" in judgment:
         color = "green" if "80%" in judgment else "lightgreen"
@@ -64,7 +64,17 @@ def score_badge(judgment):
         color = "red" if "80%" in judgment else "orange"
     else:
         color = "gray"
-    return f"<span style='color:white; background-color:{color}; padding:3px 8px; border-radius:5px'>{judgment}</span>"
+
+    # 改行挿入：全角括弧（「（」）の前で改行
+    if "（" in judgment:
+        parts = judgment.split("（")
+        line1 = parts[0]
+        line2 = "（" + parts[1]
+        display_text = f"{line1}<br>{line2}"
+    else:
+        display_text = judgment
+
+    return f"<span style='color:white; background-color:{color}; padding:3px 8px; border-radius:5px'>{display_text}</span>"
 
 # --- Streamlit UI ---
 st.markdown("""
