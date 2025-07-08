@@ -62,7 +62,7 @@ def score_badge(judgment):
         parts = judgment.split("（")
         line1 = parts[0]
         line2 = "（" + parts[1]
-        display_text = f"<span style='font-weight:bold'>{line1}</span><br><span>{line2}</span>"
+        display_text = f"<span style='font-weight:bold'>{line1}：</span><span>{line2}</span>"
     else:
         display_text = judgment
 
