@@ -163,7 +163,7 @@ def assign_color(row):
 
 plot_df["color"] = plot_df.apply(assign_color, axis=1)
 
-for color in ["dodgerblue", "orange", "gray"]:
+for color in ["green", "orange", "red", "dodgerblue", "gray"]:
     subset = plot_df[plot_df["color"] == color]
     ax.scatter(subset["日付"], subset["スコア"], color=color, label=color, zorder=5)
 
@@ -176,9 +176,9 @@ ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
 legend_elements = [
-    Line2D([0], [0], color='green', marker='o', label='Today（Bull）'),
-    Line2D([0], [0], color='orange', marker='o', label='Today(Neutral)'),
-    Line2D([0], [0], color='red', marker='o', label='Today（Bear）'),
+    Line2D([0], [0], color='green', marker='o', label='Today[Bull]'),
+    Line2D([0], [0], color='orange', marker='o', label='Today[Neutral]'),
+    Line2D([0], [0], color='red', marker='o', label='Today[Bear]'),
     Line2D([0], [0], color='dodgerblue', marker='o', label='Hit'),
     Line2D([0], [0], color='gray', marker='o', label='Miss'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull Line'),
