@@ -107,7 +107,8 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-st.metric("診断", judgment)
+#st.metric("診断", judgment)
+st.markdown(f"<p style='font-size:18px;'><b>診断：</b>{judgment}</p>", unsafe_allow_html=True)
 st.metric("判定結果", result)
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
