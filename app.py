@@ -14,7 +14,7 @@ import urllib.request
 
 # --- フォント設定（Cloudでも文字化けしないように） ---
 import matplotlib as mpl
-mpl.rcParams.update(mpl.rcParamsDefault)  # ← 最初にリセット！
+mpl.rcParams.update(mpl.rcParamsDefault)
 
 font_url = "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Regular.otf"
 font_path = "/tmp/NotoSansJP-Regular.otf"
@@ -56,9 +56,17 @@ def get_judgment(score, thresholds):
     else:
         return "弱気（下落確率：80%以上）"
 
-# --- Streamlit UI ---
-# st.image("https://yourdomain.com/images/Taki_Lab_Thumbnail_Compressed.jpg", width=250)
+# --- バッジ用HTMLスタイル ---
+def score_badge(judgment):
+    if "強気" in judgment:
+        color = "green" if "80%" in judgment else "lightgreen"
+    elif "弱気" in judgment:
+        color = "red" if "80%" in judgment else "orange"
+    else:
+        color = "gray"
+    return f"<span style='color:white; background-color:{color}; padding:3px 8px; border-radius:5px'>{judgment}</span>"
 
+# --- Streamlit UI ---
 st.markdown("""
 <div style='text-align:center'>
     <h1>📈 AI日経診断 <span style='font-size:0.7em'>(Takiの投資ラボ)</span></h1>
@@ -70,27 +78,18 @@ st.markdown("""
 日付を選んで、診断スコア・判定を確認できます。
 """)
 
-# --- モデル・データの読み込み ---
 model = joblib.load(MODEL_PATH)
 thresholds = list(map(int, joblib.load(THRESHOLDS_PATH))) if os.path.exists(THRESHOLDS_PATH) else [80, 60, 40, 20]
-t1, t2, t3, t4 = thresholds 
+t1, t2, t3, t4 = thresholds
 
-# --- スプレッドシートから「LS日経診断」を取得
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 credentials_dict = dict(st.secrets["gcp_service_account"])
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
 gc = gspread.authorize(credentials)
 ws = gc.open_by_key(SPREADSHEET_KEY).worksheet("LS日経診断")
 
-# --- @st.cache_data 関数の中も同様に：
 @st.cache_data(ttl=600)
 def load_log_df():
-    scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-    credentials_dict = dict(st.secrets["gcp_service_account"])
-    credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
-    gc = gspread.authorize(credentials)
-    ws = gc.open_by_key(SPREADSHEET_KEY).worksheet("LS日経診断")
-    
     data = ws.get_all_values()
     headers = data[0]
     rows = data[1:]
@@ -103,7 +102,6 @@ def load_log_df():
 
 log_df = load_log_df()
 
-# --- 日付選択 ---
 latest_date = log_df["日付"].max()
 st.sidebar.markdown("### 🔍 日付を選択")
 selected_date = st.sidebar.date_input("診断日", latest_date)
@@ -119,14 +117,12 @@ result = row["判定"].values[0]
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
-st.metric("診断", judgment)
+st.markdown(f"#### 診断結果：{score_badge(judgment)}", unsafe_allow_html=True)
 st.metric("判定結果", result)
 
-# --- データフィルター：スコア・ラベルあり + 診断日より前まで ---
 valid_df = log_df.dropna(subset=["label", "スコア"])
 valid_df = valid_df[valid_df["日付"] < pd.to_datetime(selected_date)].copy()
 
-# --- .loc を用いた代入 ---
 valid_df.loc[:, "prediction"] = valid_df["スコア"].apply(lambda s: "強気" if s >= t2 else "弱気" if s <= t3 else "中立")
 valid_df.loc[:, "direction"] = valid_df["label"].apply(lambda l: "上昇" if l == 1 else "下落")
 valid_df.loc[:, "hit"] = valid_df.apply(lambda row: (
@@ -143,29 +139,33 @@ st.metric(
     value=f"{hit_rate:.1%}（{hit_count}/{pred_total}）"
 )
 
-# --- スコア推移グラフ ---
 st.subheader("📈 スコア推移グラフ") 
-
 from matplotlib.lines import Line2D
 
-# --- グラフ描画 ---
 fig, ax = plt.subplots(figsize=(8, 3))
 plot_df = log_df.sort_values("日付")
 ax.plot(plot_df["日付"], plot_df["スコア"], label="スコア", marker='o')
 
-# ✅ 軸目盛（tick）のフォントも明示的に設定
+# 的中マーカー追加
+plot_df["hit"] = plot_df.apply(lambda row: (
+    (row["スコア"] >= t2 and row["label"] == 1) or
+    (row["スコア"] <= t3 and row["label"] == 0)
+), axis=1)
+ax.scatter(plot_df["日付"][plot_df["hit"]], plot_df["スコア"][plot_df["hit"]], color='lime', label='的中', zorder=5)
+ax.scatter(plot_df["日付"][~plot_df["hit"]], plot_df["スコア"][~plot_df["hit"]], color='gray', label='外れ', zorder=5)
+
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontproperties(jp_font)
 
-# しきい値線（凡例には入れない）
 ax.axhline(thresholds[0], color='green', linestyle='--')
 ax.axhline(thresholds[1], color='orange', linestyle='--')
 ax.axhline(thresholds[2], color='orange', linestyle='--')
 ax.axhline(thresholds[3], color='red', linestyle='--')
 
-# --- 凡例設定（英語表記に変更） ---
 legend_elements = [
     Line2D([0], [0], color='royalblue', marker='o', label='Score'),
+    Line2D([0], [0], color='lime', marker='o', label='的中'),
+    Line2D([0], [0], color='gray', marker='o', label='外れ'),
     Line2D([0], [0], color='green', linestyle='--', label='Bull'),
     Line2D([0], [0], color='orange', linestyle='--', label='Neutral'),
     Line2D([0], [0], color='red', linestyle='--', label='Bear')
@@ -174,18 +174,15 @@ legend = ax.legend(handles=legend_elements, loc='best', prop=jp_font)
 for text in legend.get_texts():
     text.set_fontproperties(jp_font)
 
-# --- 軸ラベル・タイトル（英語に変更） ---
 ax.set_xlabel("Date", fontproperties=jp_font)
 ax.set_ylabel("Score", fontproperties=jp_font)
-
 ax.grid(True)
 st.pyplot(fig)
 
-# --- 補足情報 ---
 st.markdown("""
 ---
 【免責事項（Disclaimer）】
-            
+
 本サービスは、過去の市場データおよび統計モデルに基づき、情報提供を目的とするものであり、
 将来の株価動向や投資成果を保証するものではありません。
 
