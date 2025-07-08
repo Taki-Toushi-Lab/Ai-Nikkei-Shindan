@@ -108,6 +108,22 @@ result = row["判定"].values[0]
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
 st.metric("診断", judgment)
+
+# --- バッジ用HTMLスタイル ---
+def score_badge(judgment):
+    if "（" in judgment:
+        parts = judgment.split("（")
+        line1 = parts[0]
+        line2 = "（" + parts[1]
+        display_text = f"<div style='text-align:center;'><div style='font-weight:bold; font-size:0.95em'>{line1}</div><div style='font-size:0.9em'>{line2}</div></div>"
+    else:
+        display_text = judgment
+
+    return f"<div style='display:inline-block; line-height:1.4; font-size:1.05em; padding-left:4px'>{display_text}</div>"
+
+# --- 表示部分で使用する例（Streamlit内で） ---
+st.markdown(score_badge(judgment), unsafe_allow_html=True)
+
 st.metric("判定結果", result)
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
@@ -156,6 +172,9 @@ for color in ["dodgerblue", "orange", "gray"]:
 
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontproperties(jp_font)
+
+# --- グラフサイズ調整 ---
+fig, ax = plt.subplots(figsize=(10, 4.5))
 
 ax.axhline(thresholds[0], color='green', linestyle='--')
 ax.axhline(thresholds[1], color='orange', linestyle='--')
