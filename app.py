@@ -11,7 +11,6 @@ from oauth2client.service_account import ServiceAccountCredentials
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 import urllib.request
-import streamlit_authenticator as stauth
 
 # --- フォント設定（Cloudでも文字化けしないように） ---
 import matplotlib as mpl
@@ -33,12 +32,6 @@ except Exception as e:
     jp_font = fm.FontProperties()
 
 # --- Googleスプレッドシートからユーザー情報を読み込む ---
-import streamlit_authenticator as stauth
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
-import pandas as pd
-import streamlit as st
-
 # --- GSheet接続設定 ---
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
 credentials_dict = st.secrets["gcp_service_account"]
@@ -71,7 +64,7 @@ else:
 # --- 認証成功後の処理（ここからアプリ本体） ---
 if not st.session_state.get("authenticated", False):
     st.stop()
-    
+
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
