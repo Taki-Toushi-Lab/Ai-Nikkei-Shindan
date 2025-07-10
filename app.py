@@ -46,20 +46,24 @@ except Exception as e:
     st.error("ユーザーリストの読み込みに失敗しました。")
     st.stop()
 
-# --- メールアドレスのみでログイン認証 ---
-st.title("🔐 メールアドレス認証")
-email_input = st.text_input("ご登録のメールアドレスを入力してください")
+# --- メールアドレスのみでログイン認証（UI + ボタン） ---
+if "authenticated" not in st.session_state:
+    st.session_state["authenticated"] = False
 
-if email_input:
-    email_input = email_input.strip().lower()
-    if email_input in user_emails:
-        st.success("ログイン認証に成功しました！")
-        st.session_state["authenticated"] = True
+if not st.session_state["authenticated"]:
+    st.title("🔐 メールアドレス認証")
+    email_input = st.text_input("ご登録のメールアドレスを入力してください")
+
+    if st.button("ログイン"):
+        if email_input.strip().lower() in user_emails:
+            st.session_state["authenticated"] = True
+            st.success("ログイン認証に成功しました！")
+            st.experimental_rerun()
+        else:
+            st.error("このメールアドレスは登録されていません。")
+            st.stop()
     else:
-        st.error("このメールアドレスは登録されていません。")
         st.stop()
-else:
-    st.stop()
 
 # --- 認証成功後の処理（ここからアプリ本体） ---
 if not st.session_state.get("authenticated", False):
