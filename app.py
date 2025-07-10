@@ -32,8 +32,16 @@ except Exception as e:
     print(f"[フォント読み込みエラー]: {e}")
     jp_font = fm.FontProperties()
 
-# --- 認証（ログイン）部分 ---
-user_df = pd.read_csv(os.path.join(os.getcwd(), "users.csv"))# ユーザー情報CSV（PayPal支払者）
+# --- Googleスプレッドシートからユーザー情報を読み込む ---
+scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+credentials_dict = dict(st.secrets["gcp_service_account"])
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
+gc = gspread.authorize(credentials)
+ws_user = gc.open("Nikkei_Users").worksheet("Users")
+
+user_data = ws_user.get_all_records()
+user_df = pd.DataFrame(user_data)
+
 names = user_df["name"].tolist()
 usernames = user_df["email"].tolist()
 passwords = user_df["password"].tolist()
@@ -50,7 +58,7 @@ if auth_status is None:
     st.warning("ログインしてください。")
     st.stop()
 elif not auth_status:
-    st.error("ユーザー名またはパスワードが間違っています。")
+    st.error("ユーザー名またはパスワードが違います。")
     st.stop()
 
 # --- 定数とパス ---
