@@ -52,17 +52,20 @@ if "authenticated" not in st.session_state:
 
 if not st.session_state["authenticated"]:
     st.title("🔐 メールアドレス認証")
+    
     with st.form("login_form"):
         email_input = st.text_input("ご登録のメールアドレスを入力してください")
         submitted = st.form_submit_button("ログイン")
 
-        if submitted:
-            if email_input.strip().lower() in user_emails:
-                st.session_state["authenticated"] = True
-                st.success("ログイン認証に成功しました！")
-                st.experimental_rerun()
-            else:
-                st.error("このメールアドレスは登録されていません。")
+    if submitted:
+        if email_input.strip().lower() in user_emails:
+            st.session_state["authenticated"] = True
+            st.success("ログイン認証に成功しました！")
+            st.experimental_rerun()  # 🔁 ページを再読み込みして認証UIを消す
+        else:
+            st.error("このメールアドレスは登録されていません。")
+    
+    # フォーム表示後に止める（上記 submitted 処理後に止まる）
     st.stop()
 
 # --- 認証成功後の処理（ここからアプリ本体） ---
