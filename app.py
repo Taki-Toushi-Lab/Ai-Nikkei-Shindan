@@ -11,6 +11,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import warnings
 warnings.simplefilter(action='ignore', category=UserWarning)
 import urllib.request
+import streamlit_authenticator as stauth
 
 # --- フォント設定（Cloudでも文字化けしないように） ---
 import matplotlib as mpl
@@ -30,6 +31,27 @@ try:
 except Exception as e:
     print(f"[フォント読み込みエラー]: {e}")
     jp_font = fm.FontProperties()
+
+# --- 認証（ログイン）部分 ---
+user_df = pd.read_csv(os.path.join(os.getcwd(), "users.csv"))# ユーザー情報CSV（PayPal支払者）
+names = user_df["name"].tolist()
+usernames = user_df["email"].tolist()
+passwords = user_df["password"].tolist()
+hashed_passwords = stauth.Hasher(passwords).generate()
+
+authenticator = stauth.Authenticate(
+    names, usernames, hashed_passwords,
+    "ai-nikkei-app", "secret_cookie", cookie_expiry_days=30
+)
+
+name, auth_status, username = authenticator.login("🔐 ログイン画面", "main")
+
+if auth_status is None:
+    st.warning("ログインしてください。")
+    st.stop()
+elif not auth_status:
+    st.error("ユーザー名またはパスワードが間違っています。")
+    st.stop()
 
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
