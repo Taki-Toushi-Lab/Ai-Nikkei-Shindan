@@ -31,47 +31,6 @@ except Exception as e:
     print(f"[フォント読み込みエラー]: {e}")
     jp_font = fm.FontProperties()
 
-# --- Googleスプレッドシートからユーザー情報を読み込む ---
-# --- GSheet接続設定 ---
-scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-credentials_dict = st.secrets["gcp_service_account"]
-credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
-gc = gspread.authorize(credentials)
-
-# --- ユーザーシート取得 ---
-try:
-    ws_user = gc.open_by_key("1WARG0Ev0wYJ1Kb1zLwihP0c45gs8Vq-h5Y22biWa7LI").worksheet("Users")
-    user_emails = [row["email"].strip().lower() for row in ws_user.get_all_records() if "email" in row]
-except Exception as e:
-    st.error("ユーザーリストの読み込みに失敗しました。")
-    st.stop()
-
-# --- メールアドレスのみでログイン認証（UI + ボタン） ---
-if "authenticated" not in st.session_state:
-    st.session_state["authenticated"] = False
-
-if not st.session_state["authenticated"]:
-    st.title("🔐 メールアドレス認証")
-    
-    with st.form("login_form"):
-        email_input = st.text_input("ご登録のメールアドレスを入力してください")
-        submitted = st.form_submit_button("ログイン")
-
-    if submitted:
-        if email_input.strip().lower() in user_emails:
-            st.session_state["authenticated"] = True
-            st.success("ログイン認証に成功しました！")
-            st.experimental_rerun()  # 🔁 ページを再読み込みして認証UIを消す
-        else:
-            st.error("このメールアドレスは登録されていません。")
-    
-    # フォーム表示後に止める（上記 submitted 処理後に止まる）
-    st.stop()
-
-# --- 認証成功後の処理（ここからアプリ本体） ---
-if not st.session_state.get("authenticated", False):
-    st.stop()
-
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
