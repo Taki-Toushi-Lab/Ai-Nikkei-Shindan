@@ -33,34 +33,45 @@ except Exception as e:
     jp_font = fm.FontProperties()
 
 # --- Googleスプレッドシートからユーザー情報を読み込む ---
+import streamlit_authenticator as stauth
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
+import pandas as pd
+import streamlit as st
+
+# --- GSheet接続設定 ---
 scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-credentials_dict = dict(st.secrets["gcp_service_account"])
+credentials_dict = st.secrets["gcp_service_account"]
 credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
 gc = gspread.authorize(credentials)
-ws_user = gc.open("Nikkei_Users").worksheet("Users")
 
-user_data = ws_user.get_all_records()
-user_df = pd.DataFrame(user_data)
-
-names = user_df["name"].tolist()
-usernames = user_df["email"].tolist()
-passwords = user_df["password"].tolist()
-hashed_passwords = stauth.Hasher(passwords).generate()
-
-authenticator = stauth.Authenticate(
-    names, usernames, hashed_passwords,
-    "ai-nikkei-app", "secret_cookie", cookie_expiry_days=30
-)
-
-name, auth_status, username = authenticator.login("🔐 ログイン画面", "main")
-
-if auth_status is None:
-    st.warning("ログインしてください。")
-    st.stop()
-elif not auth_status:
-    st.error("ユーザー名またはパスワードが違います。")
+# --- ユーザーシート取得 ---
+try:
+    ws_user = gc.open_by_key("1WARG0Ev0wYJ1Kb1zLwihP0c45gs8Vq-h5Y22biWa7LI").worksheet("Users")
+    user_emails = [row["email"].strip().lower() for row in ws_user.get_all_records() if "email" in row]
+except Exception as e:
+    st.error("ユーザーリストの読み込みに失敗しました。")
     st.stop()
 
+# --- メールアドレスのみでログイン認証 ---
+st.title("🔐 メールアドレス認証")
+email_input = st.text_input("ご登録のメールアドレスを入力してください")
+
+if email_input:
+    email_input = email_input.strip().lower()
+    if email_input in user_emails:
+        st.success("ログイン認証に成功しました！")
+        st.session_state["authenticated"] = True
+    else:
+        st.error("このメールアドレスは登録されていません。")
+        st.stop()
+else:
+    st.stop()
+
+# --- 認証成功後の処理（ここからアプリ本体） ---
+if not st.session_state.get("authenticated", False):
+    st.stop()
+    
 # --- 定数とパス ---
 MODEL_PATH = "ls_model.pkl"
 THRESHOLDS_PATH = "ls_thresholds.pkl"
