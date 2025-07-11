@@ -106,8 +106,8 @@ judgment = get_judgment(score, thresholds)
 result = row["判定"].values[0]
 
 # --- 日経平均情報の表示 ---
-today_price = row["日経平均（当日終値）"].values[0] if "日経平均（当日終値）" in row else "ー"
-next_price = row["日経平均（翌日終値）"].values[0] if "日経平均（翌日終値）" in row else "ー"
+today_price = row["日経平均（当日）"].values[0] if "日経平均（当日）" in row else "ー"
+next_price = row["日経平均（翌日）"].values[0] if "日経平均（翌日）" in row else "ー"
 price_diff = row["日経平均（変化）"].values[0] if "日経平均（変化）" in row else "ー"
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
@@ -116,8 +116,8 @@ st.markdown(f"<p style='font-size:14px;'>診断<p style='font-size:24px;'><b>{ju
 st.metric("判定", result)
 
 col1, col2, col3 = st.columns(3)
-col1.metric("日経平均（当日）", f"{today_price} 円")
-col2.metric("日経平均（翌日）", f"{next_price} 円")
+col1.metric("日経平均（当日終値）", f"{today_price} 円")
+col2.metric("日経平均（翌日終値）", f"{next_price} 円")
 col3.metric("前日比", f"{price_diff} 円")
 
 valid_df = log_df.dropna(subset=["label", "スコア"])
