@@ -106,8 +106,8 @@ judgment = get_judgment(score, thresholds)
 result = row["判定"].values[0]
 
 # --- 日経平均情報の表示 ---
-today_price = row["日経平均（当日）"].values[0] if "日経平均（当日）" in row else "ー"
-next_price = row["日経平均（翌日）"].values[0] if "日経平均（翌日）" in row else "ー"
+today_price = row["日経平均（当日終値）"].values[0] if "日経平均（当日終値）" in row else "ー"
+next_price = row["日経平均（翌日終値）"].values[0] if "日経平均（翌日終値）" in row else "ー"
 price_diff = row["日経平均（変化）"].values[0] if "日経平均（変化）" in row else "ー"
 
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
