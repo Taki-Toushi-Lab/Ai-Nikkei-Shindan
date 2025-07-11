@@ -113,7 +113,7 @@ price_diff = row["日経平均（変化）"].values[0] if "日経平均（変化
 st.subheader(f"📅 診断日：{selected_date.strftime('%Y-%m-%d')}")
 st.metric("スコア", f"{score:.2f}")
 st.markdown(f"<p style='font-size:14px;'>診断<p style='font-size:24px;'><b>{judgment}</b></p>", unsafe_allow_html=True)
-st.metric("判定", result)
+st.metric("判定（翌日結果）", result)
 
 col1, col2, col3 = st.columns(3)
 col1.metric("日経平均（当日終値）", f"{today_price} 円")
