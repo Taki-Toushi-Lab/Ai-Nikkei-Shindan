@@ -207,9 +207,8 @@ st.pyplot(fig)
 
 st.markdown("""
 ---
-<div style='text-align: center;'>
-【免責事項（Disclaimer）】
-</div>
+　　　　　　　　　　【免責事項（Disclaimer）】
+
 本サービスは、過去の市場データおよびAIモデルに基づき、情報提供を目的とするものであり、
 将来の株価動向や投資成果を保証するものではありません。
 
